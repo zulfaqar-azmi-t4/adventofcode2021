@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <iostream>
+#include <cassert>
 class DocumentReader
 {
 public:
@@ -23,10 +24,10 @@ public:
       }
     std::size_t idx {0};
 
-    std::vector<std::vector<double>> cell;
+    std::vector<std::vector<int>> cell;
     while(std::getline(file, row))
       {
-        std::vector<double> columns {};
+        std::vector<int> columns {};
         parseColumn(row, columns);
         cell.push_back(columns);
       }
@@ -38,7 +39,7 @@ public:
     }
   }
 
-  const void parseColumn(const std::string & row, std::vector<double> & columns) noexcept
+  const void parseColumn(const std::string & row, std::vector<int> & columns) noexcept
   {
     std::istringstream ss(row);
     std::string column {};
@@ -51,24 +52,40 @@ public:
   const auto getData() const noexcept {return cells;}
   private:
     char separator {};
-    std::unordered_map<std::string, std::vector<double>> cells;
+    std::unordered_map<std::string, std::vector<int>> cells;
 };
 
 int main(){
   DocumentReader d;
-  d.readFile("../input/day1.txt", ' ');
+  d.readFile("../input/input.txt", ' ');
   auto alldata = d.getData();
 
   const auto & data = alldata["Data1"];
 
-  auto old_data = data[0];
+
+  auto remainder = data.size() % 3;
+  auto copied_data = data;
+  while (remainder > 0) {
+    copied_data.push_back(0);
+    --remainder;
+  }
+  std::vector<int> sum_of_three{};
+
+  for(size_t idx = 0; idx < copied_data.size() - 2; ++ idx)
+    {
+      sum_of_three.push_back(copied_data[idx] + copied_data[idx+1] + copied_data[idx + 2]);
+    }
+  auto old_data = sum_of_three[0];
   std::size_t counter = 0;
-  for(const auto & d:data){
+  assert(sum_of_three[0] == 569);
+  assert(sum_of_three[sum_of_three.size() - 1] == 378);
+  std::cout << sum_of_three[0] << " " << sum_of_three[sum_of_three.size() - 1] << '\n';
+  for(const auto & d:sum_of_three){
     if(d > old_data)
       {
         counter++;
       }
     old_data = d;
   }
-  std::cout << "Number of increasing = " << counter << '\n';
+  std::cout << counter << '\n';
 }
