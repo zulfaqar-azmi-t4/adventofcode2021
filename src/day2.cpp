@@ -1,6 +1,7 @@
 // #include "document_reader.h"
 #include <DataFrame/DataFrame.h>
 #include <set>
+#include <fmt/core.h>
 using namespace hmdf;
 
 int main(){
@@ -12,10 +13,11 @@ int main(){
     }
   catch (const DataFrameError & ex)
     {
-      std::cout << ex.what() << '\n';
+      fmt::print("{}\n", ex.what());
     }
 
   auto horizontal = 0;
+  auto aim = 0;
   auto depth = 0;
 
   const auto direction = d.get_column<std::string>("direction");
@@ -26,15 +28,16 @@ int main(){
       if(direction[idx] == "forward")
         {
           horizontal = horizontal + input[idx];
+          depth = depth + aim * input[idx];
         }
       if(direction[idx] == "down")
         {
-          depth = depth + input[idx];
+          aim = aim + input[idx];
         }
       if(direction[idx] == "up")
         {
-          depth = depth - input[idx];
+          aim = aim - input[idx];
         }
     }
-  std::cout << horizontal * depth << '\n';
+  fmt::print("Total: {}\n", horizontal * depth);
 }

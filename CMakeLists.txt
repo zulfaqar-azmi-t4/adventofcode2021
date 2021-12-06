@@ -28,4 +28,5 @@ target_compile_features(day2
 target_link_libraries(day2
   PRIVATE
   DataFrame::DataFrame
+  fmt::fmt
   )
