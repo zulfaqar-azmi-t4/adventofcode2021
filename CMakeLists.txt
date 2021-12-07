@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.17)
 project(advent_of_code)
 
+set(CMAKE_CXX_COMPILER "/usr/bin/g++-11")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Release)
@@ -13,6 +14,7 @@ if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/conaninfo.txt)
   list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_BINARY_DIR}")
 endif()
 find_package(DataFrame)
+find_package(range-v3)
 find_package(fmt)
 
 include_directories(
@@ -21,12 +23,26 @@ include_directories(
 
 add_executable(day1 src/day1.cpp)
 add_executable(day2 src/day2.cpp)
+add_executable(day3 src/day3.cpp)
+
 target_compile_features(day2
   PRIVATE
-    cxx_std_20
+  cxx_std_20
   )
 target_link_libraries(day2
   PRIVATE
   DataFrame::DataFrame
   fmt::fmt
+  range-v3::range-v3
+  )
+
+target_compile_features(day3
+  PRIVATE
+  cxx_std_20
+  )
+target_link_libraries(day3
+  PRIVATE
+  DataFrame::DataFrame
+  fmt::fmt
+  range-v3::range-v3
   )

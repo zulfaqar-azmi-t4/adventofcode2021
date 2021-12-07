@@ -9,6 +9,8 @@ class ConanPackage(ConanFile):
     requires = [
         ('fmt/8.0.1'),
         ('dataframe/1.19.0'),
+        ('range-v3/0.11.0'),
+        ('boost/1.77.0'),
     ]
 
     default_options = (
