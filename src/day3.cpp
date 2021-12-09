@@ -38,14 +38,30 @@ int main() {
     }
   decltype(gamma) epsilon = gamma.flip();
   fmt::print("gamma: {}, epsilon: {}\n", gamma.to_ulong(), epsilon.to_ulong());
-  /**
-   * gamma: 0b10111101 epsilon:3906 result:738234
-   */
-  // std::vector<std::bitset<bits>> common{};
-  // for (const auto & diag:diagnostic)
-  //   {
-  //     common.push_back(std::bitset<bits>(diag));
-  //   }
-
   std::array<std::basic_string<char>, 2> filtered{};
+
+  std::vector<std::basic_string<char>> o2 = diagnostic;
+  for (int i = 0; i < bits; ++i) {
+    std::array<std::vector<std::basic_string<char>>, 2> arr{};
+    for (const auto & diag : o2) {
+      arr[diag[i]-48].push_back(diag);
+    }
+    o2 = (arr[0].size() > arr[1].size()) ? arr[0] : arr[1];
+  }
+  fmt::print("{}\n", o2.front());
+
+  std::vector<std::basic_string<char>> co2 = diagnostic;
+  for (int i = 0; i < bits; ++i) {
+    std::array<std::vector<std::basic_string<char>>, 2> arr{};
+    for (const auto &diag : co2) {
+      arr[diag[i] - 48].push_back(diag);
+    }
+    co2 = (arr[0].size() > arr[1].size()) ? arr[1] : arr[0];
+  }
+  fmt::print("{}\n", co2.front());
+
+  std::bitset<bits> o2_{o2.front()};
+  std::bitset<bits> co2_{co2.front()};
+  fmt::print("o2: {}, co2: {}, multiply = {}\n", o2_.to_ulong(),
+             co2_.to_ulong(), o2_.to_ulong() * co2_.to_ulong());
 }
