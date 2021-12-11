@@ -24,6 +24,7 @@ include_directories(
 add_executable(day1 src/day1.cpp)
 add_executable(day2 src/day2.cpp)
 add_executable(day3 src/day3.cpp)
+add_executable(day4 src/day4.cpp)
 
 target_compile_features(day2
   PRIVATE
@@ -41,6 +42,17 @@ target_compile_features(day3
   cxx_std_20
   )
 target_link_libraries(day3
+  PRIVATE
+  DataFrame::DataFrame
+  fmt::fmt
+  range-v3::range-v3
+  )
+
+target_compile_features(day4
+  PRIVATE
+  cxx_std_20
+  )
+target_link_libraries(day4
   PRIVATE
   DataFrame::DataFrame
   fmt::fmt
