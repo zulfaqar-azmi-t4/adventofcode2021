@@ -16,6 +16,7 @@ endif()
 find_package(DataFrame)
 find_package(range-v3)
 find_package(fmt)
+find_package(Boost)
 
 include_directories(
   include
@@ -57,4 +58,5 @@ target_link_libraries(day4
   DataFrame::DataFrame
   fmt::fmt
   range-v3::range-v3
+  Boost::boost
   )
