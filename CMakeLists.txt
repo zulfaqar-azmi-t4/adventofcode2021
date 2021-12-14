@@ -26,6 +26,7 @@ add_executable(day1 src/day1.cpp)
 add_executable(day2 src/day2.cpp)
 add_executable(day3 src/day3.cpp)
 add_executable(day4 src/day4.cpp)
+add_executable(day5 src/day5.cpp)
 
 target_compile_features(day2
   PRIVATE
@@ -59,4 +60,13 @@ target_link_libraries(day4
   fmt::fmt
   range-v3::range-v3
   Boost::boost
+  )
+
+target_compile_features(day5
+  PRIVATE
+  cxx_std_20
+  )
+target_link_libraries(day5
+  PRIVATE
+  fmt::fmt
   )
