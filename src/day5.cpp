@@ -7,8 +7,8 @@
 #include <vector>
 
 struct Point{
-  int x;
-  int y;
+  int x {0};
+  int y {0};
 };
 
 int main(int argc, char *argv[])
@@ -57,19 +57,34 @@ int main(int argc, char *argv[])
     max_x = std::max(max_x, e.x);
     max_y = std::max(max_y, e.y);
 
+    if(e.y == s.y)
+      {
+        if(e.x < s.x)
+          {
+            std::swap(e.x, s.x);
+          }
+      }
+      if (e.x == s.x) {
+        if (e.y < s.y) {
+          std::swap(e.y, s.y);
+        }
+      }
+      if ((e.x < s.x && e.y < s.y)) {
+        std::swap(e, s);
+      }
+
     lines.push_back(std::make_pair(s, e));
   }
-  fmt::print("{}",lines.size());
 
-  const auto it = std::partition(lines.begin(), lines.end(),
-                                 [](std::pair<Point, Point> line) {
-                                   return ((line.first.x == line.second.x) ||
-                                           (line.first.y == line.second.y));
-                                 });
-  lines.erase(it, lines.end());
+  // const auto it = std::partition(lines.begin(), lines.end(),
+  //                                [](std::pair<Point, Point> line) {
+  //                                  return ((line.first.x == line.second.x) ||
+  //                                          (line.first.y == line.second.y));
+  //                                });
+  // lines.erase(it, lines.end());
 
   std::transform(lines.begin(), lines.end(),
-                 lines.begin(), [&](std::pair<Point, Point> p){
+                 lines.begin(), [&min_x, &min_y](std::pair<Point, Point> p){
                    auto xs = p.first.x - min_x;
                    auto ys = p.first.y - min_y;
                    auto xe = p.second.x - min_x;
@@ -78,80 +93,81 @@ int main(int argc, char *argv[])
                  });
   
   fmt::print("min {}, {}, max {}, {}\n", min_x, min_y, max_x, max_y);
-  max_x = max_x - min_x ;
-  max_y = max_y - min_y ;
+  max_x = max_x - min_x + 1;
+  max_y = max_y - min_y + 1;
 
   fmt::print("min {}, {}, max {}, {}\n", min_x, min_y, max_x, max_y);
-  std::vector<int> grid((max_x * max_y), 0);
+  std::vector<std::vector<int>> grid(max_x, std::vector<int>(max_y, 0));
   for(const auto & [start_point, end_point]:lines)
     {
       auto current_x = start_point.x;
       auto current_y = start_point.y;
-      const auto idx = [&current_x, &current_y, &max_y](){
-        return current_x + current_y * max_y;
-      };
-      ++grid[idx()];
+      grid[current_x][current_y] = grid[current_x][current_y] + 1;
 
       auto diff_x = end_point.x - start_point.x;
       auto diff_y = end_point.y - start_point.y;
 
-      while(diff_x != 0 && diff_y == 0){
+      while(diff_x&& !diff_y){
           if(!std::signbit(diff_x)){
             current_x++;
-            ++grid[idx()];
             --diff_x;
           } else {
             current_x--;
-            ++grid[idx()];
             ++diff_x;
           }
+          ++grid[current_x][current_y];
       }
       
-      while (diff_x == 0 && diff_y != 0) {
+      while (!diff_x && diff_y) {
         if (!std::signbit(diff_y)) {
           current_y++;
-          ++grid[idx()];
           --diff_y;
         } else {
           current_y--;
-          ++grid[idx()];
           ++diff_y;
         }
+        ++grid[current_x][current_y];
       }
       
-      while (diff_x != 0 && diff_y != 0) {
-        if (!std::signbit(diff_y)) {
+      while (diff_x && diff_y) {
+        if (!std::signbit(diff_x) && !std::signbit(diff_y)) {
           current_x++;
           current_y++;
-          ++grid[idx()];
           --diff_x;
           --diff_y;
-        } else {
+        } else if (!std::signbit(diff_x) && std::signbit(diff_y)) {
+          current_x++;
+          current_y--;
+          --diff_x;
+          ++diff_y;
+        } else if (std::signbit(diff_x) && !std::signbit(diff_y)) {
+          current_x--;
+          current_y++;
+          ++diff_x;
+          --diff_y;
+        }
+        else {
           current_x--;
           current_y--;
-          ++grid[idx()];
           ++diff_y;
           ++diff_y;
         }
+        ++grid[current_x][current_y];
       }
-  }
+    }
 
   int overlapped {0};
 
-  for(int y = 0; y < max_y; ++y)
-    {
-      for(int x = 0; x < max_x; ++x)
+for(int x = 0; x < grid.size(); ++x)
+  {
+      for(int y = 0; y < grid[0].size(); ++y)
         {
-          const auto index = x + y * max_y;
-          if(grid[index] != 0 && grid[index] != 1)
+          if(grid[x][y] != 0 && grid[x][y] != 1)
             {
               ++overlapped;
             }
         }
-    }
-    const auto its =
-      std::min_element(grid.begin(), grid.end());
+  }
 
-    fmt::print("min = {}\n", std::distance(grid.begin(), its));
     fmt::print("overlapped: {}\n", overlapped);
 }
